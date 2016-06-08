@@ -1,0 +1,39 @@
+<launch>
+
+	<!-- set up arguments -->
+	<arg name="run_recognition" value="false" />
+	<arg name="verbose" value="false" />
+
+	<!-- launch RGB-D camera -->
+	<include file="$(find openni_launch)/launch/openni.launch">
+		<arg name="depth_registration" value="true"/>
+	</include>
+
+	<!-- launch geometry-based region proposal node -->
+	<!-- x,y,z min and max can be used to parameterize the workspace if known (optional) -->
+	<node name="geom_region_proposal" pkg="geom_rcnn" type="geom_region_proposal" output="screen">
+		<param name="xmin" value="-1.0" />
+		<param name="xmax" value="1.0" />
+		<param name="ymin" value="-1.0" />
+		<param name="ymax" value="3.0" />
+		<param name="zmin" value="0.5" />
+		<param name="zmax" value="1.1" />
+		<param name="verbose" value="$(arg verbose)" />
+	</node>
+
+	<!-- launch node that
+	   ** translates proposal regions in depth space to rgb space
+	   ** runs object recognition
+	-->
+	<node name="rgb_object_detection" pkg="geom_rcnn" type="rgb_object_detection.py" output="screen">
+		<param name="run_recognition" value="$(arg run_recognition)" />
+		<param name="model_file" value="$(find geom_rcnn)/config/model_file.pkl" />
+		<param name="category_file" value="$(find geom_rcnn)/config/category_file.pkl" />
+		<param name="verbose" value="$(arg verbose)" />
+	</node>
+
+	<!-- launch rviz to visualize geometry-based region proposal method (optional) -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find geom_rcnn)/config/viz.rviz" />
+
+
+</launch>

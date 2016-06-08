@@ -1,0 +1,31 @@
+<launch>
+
+	<!-- set up parameters -->
+	<arg name="category" value="apple" />
+	<arg name="verbose" value="false" />
+
+	<!-- launch RGB-D camera -->
+	<include file="$(find openni_launch)/launch/openni.launch">
+		<arg name="depth_registration" value="true"/>
+	</include>
+
+	<!-- launch geometry-based region proposal node -->
+	<!-- x,y,z min and max can be used to parameterize the workspace if known (optional) -->
+	<node name="geom_region_proposal" pkg="geom_rcnn" type="geom_region_proposal" output="screen">
+		<param name="xmin" value="-1.0" />
+		<param name="xmax" value="1.0" />
+		<param name="ymin" value="-1.0" />
+		<param name="ymax" value="3.0" />
+		<param name="zmin" value="0.5" />
+		<param name="zmax" value="1.1" />
+		<param name="verbose" value="$(arg verbose)" />
+	</node>
+
+	<node name="store_data" pkg="geom_rcnn" type="store_data.py" output="screen">
+		<param name="category" value="$(arg category)" />
+		<param name="data_dir" value="$(find geom_rcnn)/data/" />
+		<param name="init_idx" value="0"/> <!-- if you've run this for a particular object class before, you can alter this to not overwrite old data -->
+		<param name="rate" value="10" /> <!-- number of images to capture per second -->
+	</node>
+
+</launch>

@@ -1,0 +1,13 @@
+<launch>
+
+	<!-- set up arguments -->
+	<arg name="verbose" value="true" />
+
+	<!-- launch node to train cnn model -->
+	<node name="train_cnn" pkg="geom_rcnn" type="train_cnn.py" output="screen">
+		<param name="model_file" value="$(find geom_rcnn)/config/model_file.pkl" />
+		<param name="category_file" value="$(find geom_rcnn)/config/category_file.pkl" />
+		<param name="data_dir" value="$(find geom_rcnn)/data/" />
+		<param name="verbose" value="$(arg verbose)" />
+	</node>
+</launch>
