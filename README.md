@@ -22,11 +22,11 @@ For more details on Geom R-CNN, read the paper presented at the [Deep Learning W
   catkin_init_workspace
   ```
 2. Clone the Geom R-CNN repository in your ROS workspace
-  ```Shell
+```Shell
   git clone https://github.com/asbroad/geom_rcnn.git
   ```
 3. From the base directory of the workspace, build the code
-  ```Shell
+```Shell
   cd ~/geom_rcnn_ws
   catkin_make
   ```
