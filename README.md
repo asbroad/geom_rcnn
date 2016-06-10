@@ -1,5 +1,4 @@
 # Geometry-Based Region Proposals for Accelerated Image-Based Detection of 3D Objects
-[comment]: <> (Geometry-Based Region Proposals for Accelerated 3D Object Detection)
 
 
 **Geom R-CNN** is an efficient framework for 3D object detection in Robotics applications. It is specifically designed for detecting objects in table-top scenes (or similar environments with objects sitting on a dominant plane).  The output of the system is a class label and 3D position for each object in the scene.  
