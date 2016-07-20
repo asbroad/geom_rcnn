@@ -104,4 +104,4 @@ If you find Geom R-CNN useful in your research, please consider citing:
 
 ### License
 
-Fast R-CNN is released under the MIT License (refer to the LICENSE file for details).
+Geom R-CNN is released under the MIT License (refer to the LICENSE file for details).
