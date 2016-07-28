@@ -92,19 +92,17 @@ To see how often messages are being published on the '/detections' topic, open a
   rostopic hz /detections
   ```
 
-[//]: # (
+[//]: # (### Citing Geom R-CNN)
 
-### Citing Geom R-CNN
+[//]: # (If you find Geom R-CNN useful in your research, please consider citing:)
 
-If you find Geom R-CNN useful in your research, please consider citing:
+[//]: # (    @article{broad2016geometry,)
+[//]: # (        Author = {Alexander Broad and Brenna Argall},)
+[//]: # (        Title = {Geometry-Based Region Proposals for Accelerated Image-Based Detection of 3D Objects},)
+[//]: # (        booktitle={RSS Workshop Deep Learning})
+[//]: # (        Year = {2016})
+[//]: # (    })
 
-    @article{broad2016geometry,
-        Author = {Alexander Broad and Brenna Argall},
-        Title = {Geometry-Based Region Proposals for Accelerated Image-Based Detection of 3D Objects},
-        booktitle={RSS Workshop Deep Learning}
-        Year = {2016}
-    }
-)
 
 ### License
 
