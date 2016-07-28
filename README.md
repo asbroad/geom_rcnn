@@ -92,7 +92,7 @@ To see how often messages are being published on the '/detections' topic, open a
   rostopic hz /detections
   ```
 
-[//]: # ()
+[//]: # (
 
 ### Citing Geom R-CNN
 
