@@ -10,7 +10,8 @@ Geom R-CNN
  - runs at an average of 12 hz on a Core i7 laptop
  - released as <img src="./ros.png" width="15"> ROS package 
 
-For more details on Geom R-CNN, read the paper presented at the [Deep Learning Workshop at RSS 2016](http://juxi.net/workshop/deep-learning-rss-2016/).
+[//]: # (For more details on Geom R-CNN, read the paper presented at the [Deep Learning Workshop at RSS 2016](http://juxi.net/workshop/deep-learning-rss-2016/).)
+
 
 ### Installation
 
@@ -91,6 +92,8 @@ To see how often messages are being published on the '/detections' topic, open a
   rostopic hz /detections
   ```
 
+[//]: # ()
+
 ### Citing Geom R-CNN
 
 If you find Geom R-CNN useful in your research, please consider citing:
@@ -101,6 +104,7 @@ If you find Geom R-CNN useful in your research, please consider citing:
         booktitle={RSS Workshop Deep Learning}
         Year = {2016}
     }
+)
 
 ### License
 
