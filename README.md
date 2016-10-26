@@ -87,7 +87,7 @@ Important parameters that can be set the 'train_cnn_finetune.launch' file
 ```Shell
   roslaunch geom_rcnn dataset_acquisition.launch
   ```
-**IMPORTANT: **The **space bar** is used as a toggle switch to turn on and off the part of the code that saves the training data.  Therefore, by default, the code will **not** immediately start saving data, instead you must press the space bar to turn it on.  This also means that you can turn on and off the saving functionality as you augment the position/orientation/lighting coditions of your workspace.
+**IMPORTANT**: The **space bar** is used as a toggle switch to turn on and off the part of the code that saves the training data.  Therefore, by default, the code will **not** immediately start saving data, instead you must press the space bar to turn it on.  This also means that you can turn on and off the saving functionality as you augment the position/orientation/lighting coditions of your workspace.
 
 Important parameters that can be set the 'dataset_acquisition.launch' file  
 * xmin, xmax, ymin, ymax, zmin, zmax : parameters for point cloud passthrough filters.
