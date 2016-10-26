@@ -1,13 +1,23 @@
 <launch>
 
-	<!-- set up arguments -->
-	<arg name="verbose" value="true" />
-
-	<!-- launch node to train cnn model -->
-	<node name="train_cnn" pkg="geom_rcnn" type="train_cnn.py" output="screen">
-		<param name="model_file" value="$(find geom_rcnn)/config/model_file.pkl" />
-		<param name="category_file" value="$(find geom_rcnn)/config/category_file.pkl" />
+	<!-- launch node to train cnn model 
+			data_dir - location of training data
+			model_file - location of CNN model file
+			category_file - location of object category file
+			weights_file - location of model weights file
+			history_file - location of history file
+			train_test_split_percentage - percentage of training data used for test set
+	    num_training_epochs - number of times training will iterate over full train set
+	-->
+	<node name="keras_cnn" pkg="geom_rcnn" type="keras_cnn.py" output="screen">
 		<param name="data_dir" value="$(find geom_rcnn)/data/" />
-		<param name="verbose" value="$(arg verbose)" />
+		<param name="model_file" value="$(find geom_rcnn)/config/model.json" />
+		<param name="category_file" value="$(find geom_rcnn)/config/category.pkl" />
+		<param name="weights_file" value="$(find geom_rcnn)/config/weights.h5" />
+		<param name="history_file" value="$(find geom_rcnn)/config/history.pkl" />
+		<param name="train_test_split_percentage" value="0.2" />
+		<param name="num_training_epochs" value="100" />
+		<param name="verbose" value="true" />
 	</node>
+
 </launch>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>geom_rcnn</name>
-  <version>0.0.1</version>
+  <version>0.1.0</version>
   <description>The geom_rcnn package</description>
 
   <maintainer email="alexsbroad@gmail.com">Alex Broad</maintainer>
@@ -19,6 +19,7 @@
   <build_depend>pcl_msgs</build_depend>
   <build_depend>libpcl-all-dev</build_depend>
   <build_depend>message_generation</build_depend>
+
   <run_depend>libpcl-all</run_depend>
   <run_depend>pcl_msgs</run_depend>
   <run_depend>pcl_conversions</run_depend>

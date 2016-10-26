@@ -1,0 +1,26 @@
+<launch>
+
+	<!-- launch node to finetrain pre-trained cnn model 
+			data_dir - location of training data
+			model_architecture - name of pre-trained model architecture 
+			 * options include : vgg16, resnet, inception
+			model_file - location of CNN model file
+			category_file - location of object category file
+			weights_file - location of model weights file
+			history_file - location of history file
+			train_test_split_percentage - percentage of training data used for test set
+	    num_training_epochs - number of times training will iterate over full train set
+	-->	
+	<node name="keras_cnn_finetune" pkg="geom_rcnn" type="keras_cnn_finetune.py" output="screen" required="true">
+		<param name="data_dir" value="$(find geom_rcnn)/data/" />
+		<param name="model_architecture" value="vgg16"/> 
+		<param name="model_file" value="$(find geom_rcnn)/config/model_vgg16.json" />
+		<param name="category_file" value="$(find geom_rcnn)/config/category_vgg16.pkl" />
+		<param name="weights_file" value="$(find geom_rcnn)/config/weights_vgg16.h5" />
+		<param name="history_file" value="$(find geom_rcnn)/config/history_vgg16.pkl" />
+		<param name="verbose" value="true" />
+		<param name="train_test_split_percentage" value="0.2" />
+		<param name="num_training_epochs" value="100" />
+	</node>
+
+</launch>

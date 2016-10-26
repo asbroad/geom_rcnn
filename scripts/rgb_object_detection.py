@@ -2,24 +2,23 @@
 
 import rospy
 from geometry_msgs.msg import PolygonStamped
-from sensor_msgs.msg import Image, CameraInfo
+from sensor_msgs.msg import Image
 from geom_rcnn.msg import Detection
-from PIL import Image as PImage
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import numpy as np
-from cnn import CNN
-from IPython import embed
+from keras_cnn import CNN
 
 class RGBObjectDetection:
 
     def __init__(self):
 
         self.run_recognition = rospy.get_param('/rgb_object_detection/run_recognition')
-        self.model_file = rospy.get_param('/rgb_object_detection/model_file')
-        self.category_file = rospy.get_param('/rgb_object_detection/category_file')
-        self.verbose = rospy.get_param('/rgb_object_detection/verbose')
-
+        self.model_filename = rospy.get_param('/rgb_object_detection/model_file')
+        self.weights_filename = rospy.get_param('/rgb_object_detection/weights_file')
+        self.categories_filename = rospy.get_param('/rgb_object_detection/category_file')
+        self.verbose = rospy.get_param('/rgb_object_detection/verbose', False)
+        
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber('/camera/rgb/image_color', Image, self.img_cb)
         self.patches_sub = rospy.Subscriber('/candidate_regions_depth', PolygonStamped, self.patches_cb)
@@ -28,7 +27,8 @@ class RGBObjectDetection:
         self.P = np.array([[525.0, 0.0, 319.5, 0.0], [0.0, 525.0, 239.5, 0.0], [0.0, 0.0, 1.0, 0.0]])
 
         if self.run_recognition:
-            self.cnn = CNN(self.model_file, self.category_file, self.verbose)
+            self.cnn = CNN('', self.model_filename, self.weights_filename, self.categories_filename, '', 0, 0, self.verbose)
+            self.cnn.load_model()
 
     def img_cb(self, msg):
         try:
@@ -83,22 +83,20 @@ class RGBObjectDetection:
             p2_im_x = int(p2_im_x + box_add)
             p2_im_y = int(p2_im_y - box_add)
 
-            #plot expanded bounding box in green
-            cv2.rectangle(self.cv_image, (p1_im_x, p1_im_y), (p2_im_x, p2_im_y), (0, 255, 0), thickness=5)
-
             # optional : run the recognition portion of the pipeline
             self.pred = ''
             self.pred_val = 0.0
             if self.run_recognition:
                 # crop image based on rectangle, note: its img[y: y + h, x: x + w] and *not* img[x: x + w, y: y + h]
                 self.crop_img = self.cv_image[p2_im_y:p1_im_y, p1_im_x:p2_im_x]
-                im = PImage.fromarray(self.crop_img, 'RGB')
-                im = im.resize((self.cnn.sample_size, self.cnn.sample_size)) # resize
-                im_gray = im.convert('L') # luma transform -  L = R * 299/1000 + G * 587/1000 + B * 114/1000
-                im_gray_list = list(im_gray.getdata()) # make it into normal readable object
-                im_gray_list_np = np.array(im_gray_list) / 255.0
-                im_pred = im_gray_list_np.reshape((1,1,self.cnn.sample_size,self.cnn.sample_size))
-                pred = self.cnn.predict(im_pred)
+
+                im = cv2.resize(self.crop_img, (self.cnn.sample_size, self.cnn.sample_size)).astype(np.float32)
+                im = im.transpose((2,0,1))
+                im = np.expand_dims(im, axis=0)
+                im = im.astype('float32')
+                im = im/255.0
+
+                pred = self.cnn.model.predict(im)
                 self.pred = self.cnn.inv_catagories[np.argmax(pred,1)[0]]
                 self.pred_val = np.max(pred,1)[0]
                 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -106,6 +104,9 @@ class RGBObjectDetection:
                 font_size = 1.0
                 font_thickness = 2
                 cv2.putText(self.cv_image, label_text, (p1_im_x,p1_im_y), font, font_size,(255,255,255), font_thickness)
+
+            #plot expanded bounding box in green
+            cv2.rectangle(self.cv_image, (p1_im_x, p1_im_y), (p2_im_x, p2_im_y), (0, 255, 0), thickness=5)
 
             # publish detection message
             det_msg = Detection()

@@ -1,8 +1,8 @@
 <launch>
 
 	<!-- set up arguments -->
-	<arg name="run_recognition" value="false" />
-	<arg name="verbose" value="false" />
+	<arg name="run_recognition" value="true" /> <!-- false = only object detection -->
+	<arg name="verbose" value="false" /> <!-- having issues? this can help debug -->
 
 	<!-- launch RGB-D camera -->
 	<include file="$(find openni_launch)/launch/openni.launch">
@@ -24,16 +24,19 @@
 	<!-- launch node that
 	   ** translates proposal regions in depth space to rgb space
 	   ** runs object recognition
+	   model_file - location of CNN model file
+	   category_file - location of object categories files
+	   weights_file - location of trained CNN weights file
 	-->
 	<node name="rgb_object_detection" pkg="geom_rcnn" type="rgb_object_detection.py" output="screen">
 		<param name="run_recognition" value="$(arg run_recognition)" />
-		<param name="model_file" value="$(find geom_rcnn)/config/model_file.pkl" />
-		<param name="category_file" value="$(find geom_rcnn)/config/category_file.pkl" />
+		<param name="model_file" value="$(find geom_rcnn)/config/model.json" /> 
+		<param name="category_file" value="$(find geom_rcnn)/config/category.pkl" /> 
+		<param name="weights_file" value="$(find geom_rcnn)/config/weights.h5" /> 
 		<param name="verbose" value="$(arg verbose)" />
 	</node>
 
 	<!-- launch rviz to visualize geometry-based region proposal method (optional) -->
 	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find geom_rcnn)/config/viz.rviz" />
-
 
 </launch>

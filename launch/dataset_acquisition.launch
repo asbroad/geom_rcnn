@@ -1,8 +1,8 @@
 <launch>
 
 	<!-- set up parameters -->
-	<arg name="category" value="apple" />
-	<arg name="verbose" value="false" />
+	<arg name="category" value="CATEGORY_NAME" /> <!-- the name of the current object -->
+	<arg name="verbose" value="false" /> <!-- having issues? this can help debug -->
 
 	<!-- launch RGB-D camera -->
 	<include file="$(find openni_launch)/launch/openni.launch">
@@ -21,11 +21,26 @@
 		<param name="verbose" value="$(arg verbose)" />
 	</node>
 
+	<!-- launches keyboard input node
+			 pressing the space bar will designate whether or not to capture streaming data 
+	-->
+	<node name="keyboard_cb" pkg="geom_rcnn" type="keyboard_cb" output="screen"/>
+
+
+	<!-- launch node that
+	   ** captures streaming data off an rgb-d camera
+	   data_dir - location where you would like to store the training data
+	   init_idx - if you capture data on a single object class by running this code multiple times, you can set increase this variable to ensure that you do not overwrite old data
+	   rate - the number of images to capture per second
+	-->
 	<node name="store_data" pkg="geom_rcnn" type="store_data.py" output="screen">
 		<param name="category" value="$(arg category)" />
 		<param name="data_dir" value="$(find geom_rcnn)/data/" />
-		<param name="init_idx" value="0"/> <!-- if you've run this for a particular object class before, you can alter this to not overwrite old data -->
-		<param name="rate" value="10" /> <!-- number of images to capture per second -->
+		<param name="init_idx" value="0"/> 
+		<param name="rate" value="10" /> 
 	</node>
+
+	<!-- launch rviz to visualize geometry-based region proposal method (optional) -->
+	<!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find geom_rcnn)/config/viz.rviz" /-->
 
 </launch>

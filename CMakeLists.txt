@@ -77,6 +77,9 @@ generate_messages(
   geometry_msgs std_msgs
 )
 
+#generate_dynamic_reconfigure_options(
+#)
+
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -101,6 +104,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -111,6 +115,7 @@ include_directories(
 
 ## Declare a cpp executable
 add_executable(geom_region_proposal src/geom_region_proposal.cpp)
+add_executable(keyboard_cb src/keyboard_cb.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -118,6 +123,8 @@ add_executable(geom_region_proposal src/geom_region_proposal.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(geom_region_proposal ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(keyboard_cb ${catkin_LIBRARIES})
+
 #############
 ## Install ##
 #############

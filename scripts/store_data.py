@@ -2,14 +2,12 @@
 
 import rospy
 from sensor_msgs.msg import Image
-from PIL import Image as PImage
+from std_msgs.msg import Bool
 from geometry_msgs.msg import PolygonStamped
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 import numpy as np
 import time
-from IPython import embed
-import rospkg
 
 class StoreData:
 
@@ -22,8 +20,11 @@ class StoreData:
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber('/camera/rgb/image_color', Image, self.img_cb)
         self.patches_sub = rospy.Subscriber('/candidate_regions_depth', PolygonStamped, self.patches_cb)
+        self.capture_sub = rospy.Subscriber('/capture/keyboard', Bool, self.capture_cb)
         # you can read this value off of your sensor from the '/camera/depth_registered/camera_info' topic
         self.P = np.array([[525.0, 0.0, 319.5, 0.0], [0.0, 525.0, 239.5, 0.0], [0.0, 0.0, 1.0, 0.0]])
+
+        self.capture = False
 
     def img_cb(self, msg):
         try:
@@ -32,7 +33,10 @@ class StoreData:
           print(e)
 
     def patches_cb(self, msg):
+        has_image = False
         if hasattr(self, 'cv_image'):
+            has_image = True
+        if has_image:
             ul_pc = msg.polygon.points[0]
             lr_pc = msg.polygon.points[1]
             cen_pc = msg.polygon.points[2]
@@ -79,21 +83,26 @@ class StoreData:
 
             # crop image based on rectangle, note: its img[y: y + h, x: x + w] and *not* img[x: x + w, y: y + h]
             self.crop_img = self.cv_image[p2_im_y:p1_im_y, p1_im_x:p2_im_x]
+            filename = self.data_dir + self.category + '/' + str(self.pic_count).zfill(4) + '_color.jpg'
 
             cv2.imshow("Image window", self.cv_image)
             cv2.waitKey(3)
 
-            filename = self.data_dir + self.category + '/' + str(self.pic_count).zfill(4) + '.jpg'
-            cv2.imwrite(filename, self.crop_img)
-            self.pic_count += 1
+            if self.capture:
+                cv2.imwrite(filename, self.crop_img)
+                self.pic_count += 1
             time.sleep(self.rate)
 
+    def capture_cb(self, data):
+        if data.data == True:
+            self.capture = not self.capture
+        print 'got message, capture variable : ', self.capture
 
 def main():
     store_data = StoreData()
     rospy.init_node('store_data', anonymous=True)
     try:
-      rospy.spin()
+        rospy.spin()
     except KeyboardInterrupt:
       print("Shutting down")
 
