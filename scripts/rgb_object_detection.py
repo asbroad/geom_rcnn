@@ -22,7 +22,7 @@ class RGBObjectDetection:
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber('/camera/rgb/image_color', Image, self.img_cb)
         self.patches_sub = rospy.Subscriber('/candidate_regions_depth', PolygonStamped, self.patches_cb)
-        self.detection_pub = rospy.Publisher('/detections', Detection)
+        self.detection_pub = rospy.Publisher('/detections', Detection, queue_size=1)
         # you can read this value off of your sensor from the '/camera/depth_registered/camera_info' topic
         self.P = np.array([[525.0, 0.0, 319.5, 0.0], [0.0, 525.0, 239.5, 0.0], [0.0, 0.0, 1.0, 0.0]])
 
