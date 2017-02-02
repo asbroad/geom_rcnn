@@ -90,20 +90,22 @@ class RGBObjectDetection:
                 # crop image based on rectangle, note: its img[y: y + h, x: x + w] and *not* img[x: x + w, y: y + h]
                 self.crop_img = self.cv_image[p2_im_y:p1_im_y, p1_im_x:p2_im_x]
 
-                im = cv2.resize(self.crop_img, (self.cnn.sample_size, self.cnn.sample_size)).astype(np.float32)
-                im = im.transpose((2,0,1))
-                im = np.expand_dims(im, axis=0)
-                im = im.astype('float32')
-                im = im/255.0
+                # if one of the x,y dimensions of the bounding box is 0, don't run the recognition portion
+                if self.crop_img.shape[0] != 0 and self.crop_img.shape[1] != 0:
+	                im = cv2.resize(self.crop_img, (self.cnn.sample_size, self.cnn.sample_size)).astype(np.float32)
+	                im = im.transpose((2,0,1))
+	                im = np.expand_dims(im, axis=0)
+	                im = im.astype('float32')
+	                im = im/255.0
 
-                pred = self.cnn.model.predict(im)
-                self.pred = self.cnn.inv_categories[np.argmax(pred,1)[0]]
-                self.pred_val = np.max(pred,1)[0]
-                font = cv2.FONT_HERSHEY_SIMPLEX
-                label_text = str(self.pred)
-                font_size = 1.0
-                font_thickness = 2
-                cv2.putText(self.cv_image, label_text, (p1_im_x,p1_im_y), font, font_size,(255,255,255), font_thickness)
+	                pred = self.cnn.model.predict(im)
+	                self.pred = self.cnn.inv_categories[np.argmax(pred,1)[0]]
+	                self.pred_val = np.max(pred,1)[0]
+	                font = cv2.FONT_HERSHEY_SIMPLEX
+	                label_text = str(self.pred)
+	                font_size = 1.0
+	                font_thickness = 2
+	                cv2.putText(self.cv_image, label_text, (p1_im_x,p1_im_y), font, font_size,(255,255,255), font_thickness)
 
             #plot expanded bounding box in green
             cv2.rectangle(self.cv_image, (p1_im_x, p1_im_y), (p2_im_x, p2_im_y), (0, 255, 0), thickness=5)
