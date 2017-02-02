@@ -35,7 +35,7 @@ An up-to-date version of this code will also be made available through GitHub (h
 Software
 1. [ROS](http://www.ros.org/) (Tested with ROS Indigo and Ubuntu 14.04)
 2. [Keras](https://keras.io/)
-3. [Theano](http://deeplearning.net/software/theano/) or [TensorFlow](https://www.tensorflow.org/) (Tested with Theano 0.8)
+3. [Theano](http://deeplearning.net/software/theano/) or [TensorFlow](https://www.tensorflow.org/) (Tested with Theano 0.8, NOTE: CURRENTLY NOT WORKING WITH TENSORFLOW)
 4. OpenCV
 5. PCL 1.2 or greater
 

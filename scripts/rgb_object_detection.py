@@ -97,7 +97,7 @@ class RGBObjectDetection:
                 im = im/255.0
 
                 pred = self.cnn.model.predict(im)
-                self.pred = self.cnn.inv_catagories[np.argmax(pred,1)[0]]
+                self.pred = self.cnn.inv_categories[np.argmax(pred,1)[0]]
                 self.pred_val = np.max(pred,1)[0]
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 label_text = str(self.pred)
