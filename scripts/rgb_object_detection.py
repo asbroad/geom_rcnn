@@ -13,6 +13,8 @@ class RGBObjectDetection:
 
     def __init__(self):
 
+        rospy.init_node('rgb_object_detection', anonymous=True)
+
         self.run_recognition = rospy.get_param('/rgb_object_detection/run_recognition')
         self.model_filename = rospy.get_param('/rgb_object_detection/model_file')
         self.weights_filename = rospy.get_param('/rgb_object_detection/weights_file')
@@ -25,6 +27,9 @@ class RGBObjectDetection:
         self.detection_pub = rospy.Publisher('/detections', Detection, queue_size=1)
         # you can read this value off of your sensor from the '/camera/depth_registered/camera_info' topic
         self.P = np.array([[525.0, 0.0, 319.5, 0.0], [0.0, 525.0, 239.5, 0.0], [0.0, 0.0, 1.0, 0.0]])
+
+        # cv2.namedWindow('Image',cv2.WINDOW_NORMAL)
+        # cv2.resizeWindow('Image', 1200,1200)
 
         if self.run_recognition:
             self.cnn = CNN('', self.model_filename, self.weights_filename, self.categories_filename, '', 0, 0, self.verbose)
@@ -92,20 +97,21 @@ class RGBObjectDetection:
 
                 # if one of the x,y dimensions of the bounding box is 0, don't run the recognition portion
                 if self.crop_img.shape[0] != 0 and self.crop_img.shape[1] != 0:
-	                im = cv2.resize(self.crop_img, (self.cnn.sample_size, self.cnn.sample_size)).astype(np.float32)
-	                im = im.transpose((2,0,1))
-	                im = np.expand_dims(im, axis=0)
-	                im = im.astype('float32')
-	                im = im/255.0
+                    im = cv2.resize(self.crop_img, (self.cnn.sample_size, self.cnn.sample_size)).astype(np.float32)
+                    im = np.expand_dims(im, axis=0)
+                    im = im.astype('float32')
+                    im = im/255.0
 
-	                pred = self.cnn.model.predict(im)
-	                self.pred = self.cnn.inv_categories[np.argmax(pred,1)[0]]
-	                self.pred_val = np.max(pred,1)[0]
-	                font = cv2.FONT_HERSHEY_SIMPLEX
-	                label_text = str(self.pred)
-	                font_size = 1.0
-	                font_thickness = 2
-	                cv2.putText(self.cv_image, label_text, (p1_im_x,p1_im_y), font, font_size,(255,255,255), font_thickness)
+                    if self.cnn.model_loaded:
+                        with self.cnn.graph.as_default():
+                            pred = self.cnn.model.predict(im)
+                            self.pred = self.cnn.inv_categories[np.argmax(pred,1)[0]]
+                            self.pred_val = np.max(pred,1)[0]
+                            font = cv2.FONT_HERSHEY_SIMPLEX
+                            label_text = str(self.pred)
+                            font_size = 1.0
+                            font_thickness = 2
+                            cv2.putText(self.cv_image, label_text, (p1_im_x,p1_im_y), font, font_size,(255,255,255), font_thickness)
 
             #plot expanded bounding box in green
             cv2.rectangle(self.cv_image, (p1_im_x, p1_im_y), (p2_im_x, p2_im_y), (0, 255, 0), thickness=5)
@@ -123,7 +129,6 @@ class RGBObjectDetection:
 
 def main():
     rgb_object_detection = RGBObjectDetection()
-    rospy.init_node('rgb_object_detection', anonymous=True)
     try:
       rospy.spin()
     except KeyboardInterrupt:

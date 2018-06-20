@@ -5,7 +5,7 @@
 	<arg name="verbose" value="false" /> <!-- having issues? this can help debug -->
 
 	<!-- launch RGB-D camera -->
-	<include file="$(find openni_launch)/launch/openni.launch">
+	<include file="$(find freenect_launch)/launch/freenect.launch">
 		<arg name="depth_registration" value="true"/>
 	</include>
 

@@ -34,7 +34,7 @@ void passthrough_z(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered)
     pcl::PassThrough<pcl::PointXYZ> pass;
     pass.setInputCloud (boost::make_shared<pcl::PointCloud<pcl::PointXYZ> >(*cloud_filtered));
     pass.setFilterFieldName ("z");
-    pass.setFilterLimits (0.5, 1.1);
+    pass.setFilterLimits (zmin, zmax);
     pass.filter (*cloud_filtered);
 }
 
@@ -44,7 +44,7 @@ void passthrough_x(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered)
     pcl::PassThrough<pcl::PointXYZ> pass;
     pass.setInputCloud (boost::make_shared<pcl::PointCloud<pcl::PointXYZ> >(*cloud_filtered));
     pass.setFilterFieldName ("x");
-    pass.setFilterLimits (-1.0, 1.0);
+    pass.setFilterLimits (xmin, xmax);
     pass.filter (*cloud_filtered);
 }
 
@@ -54,7 +54,7 @@ void passthrough_y(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered)
     pcl::PassThrough<pcl::PointXYZ> pass;
     pass.setInputCloud (boost::make_shared<pcl::PointCloud<pcl::PointXYZ> >(*cloud_filtered));
     pass.setFilterFieldName ("y");
-    pass.setFilterLimits (-1.0, 3.0);
+    pass.setFilterLimits (ymin, ymax);
     pass.filter (*cloud_filtered);
 }
 

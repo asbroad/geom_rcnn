@@ -8,6 +8,8 @@ from keras.callbacks import ModelCheckpoint, History
 from keras.optimizers import RMSprop
 from keras.models import model_from_json
 
+import tensorflow as tf
+
 from load_data import load_data
 
 import numpy as np
@@ -22,7 +24,7 @@ import rospy
 class CNN:
 
     def __init__(self, data_dir, model_filename, weights_filename, categories_filename, history_filename, train_test_split_percentage, num_training_epochs, verbose):
-        self.sample_size = 64 # input image size (will rescale data to this size)
+        self.sample_size = 299 # input image size (will rescale data to this size)
         self.optimizer = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08)
         self.train_test_split_percentage = train_test_split_percentage
         self.data_dir = data_dir
@@ -32,6 +34,8 @@ class CNN:
         self.history_filename = history_filename
         self.num_training_epochs = num_training_epochs
         self.verbose = verbose
+        self.graph = None
+        self.model_loaded = False
 
     def load_dataset(self):
         if self.verbose:
@@ -139,6 +143,10 @@ class CNN:
             start_time = time.time()
 
         self.model.compile(optimizer=self.optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+
+        self.graph = tf.get_default_graph()
+
+        self.model_loaded = True
 
         if self.verbose:
             end_time = time.time()

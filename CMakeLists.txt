@@ -77,8 +77,10 @@ generate_messages(
   geometry_msgs std_msgs
 )
 
-#generate_dynamic_reconfigure_options(
-#)
+generate_dynamic_reconfigure_options(
+  config/GeomVals.cfg
+  #
+)
 
 ###################################
 ## catkin specific configuration ##
